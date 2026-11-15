@@ -5,10 +5,7 @@ function OutputConsole({ output, status }) {
         <span>OUTPUT CONSOLE</span>
         <span>{status}</span>
       </div>
-
-      <pre>
-        {output || "Your program output will appear here..."}
-      </pre>
+      <pre>{output || "Your program output will appear here..."}</pre>
     </div>
   );
 }
