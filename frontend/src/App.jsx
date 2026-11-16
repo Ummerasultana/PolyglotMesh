@@ -5,19 +5,54 @@ import "./App.css";
 
 function App() {
   const [language, setLanguage] = useState("python");
-  const [code, setCode] = useState('print("Hello PolyglotMesh!")');
+
+  // Store separate code for each language
+  const [codes, setCodes] = useState({
+    python: 'print("Hello PolyglotMesh!")',
+    javascript: 'console.log("Hello PolyglotMesh!");',
+    java: `public class Main {
+    public static void main(String[] args) {
+        System.out.println("Hello PolyglotMesh!");
+    }
+}`
+  });
+
   const [output, setOutput] = useState("");
   const [status, setStatus] = useState("Ready");
 
+  // Get code for the currently selected language
+  const code = codes[language];
+
+  // Update only the selected language's code
+  const handleCodeChange = (newCode) => {
+    setCodes((previousCodes) => ({
+      ...previousCodes,
+      [language]: newCode
+    }));
+  };
+
+  // Change language without losing previous code
+  const handleLanguageChange = (newLanguage) => {
+    setLanguage(newLanguage);
+    setOutput("");
+    setStatus("Ready");
+  };
+
+  // Temporary Run button
   const handleRun = () => {
     setStatus("Frontend ready");
     setOutput(
-      "Frontend is working! Backend connection will be added later."
+      "Frontend is working!\nBackend connection will be added later."
     );
   };
 
+  // Clear only the current language's editor
   const handleClear = () => {
-    setCode("");
+    setCodes((previousCodes) => ({
+      ...previousCodes,
+      [language]: ""
+    }));
+
     setOutput("");
     setStatus("Ready");
   };
@@ -42,7 +77,7 @@ function App() {
               <button
                 key={item.value}
                 className={language === item.value ? "active" : ""}
-                onClick={() => setLanguage(item.value)}
+                onClick={() => handleLanguageChange(item.value)}
               >
                 {item.label}
               </button>
@@ -53,21 +88,25 @@ function App() {
             <button className="clear-btn" onClick={handleClear}>
               Clear
             </button>
+
             <button className="run-btn" onClick={handleRun}>
               ▶ Run
             </button>
           </div>
         </div>
 
-        <h3>Code Editor</h3>
+        <h3>Code Editor - {language}</h3>
 
         <CodeEditor
           language={language}
           code={code}
-          setCode={setCode}
+          setCode={handleCodeChange}
         />
 
-        <OutputConsole output={output} status={status} />
+        <OutputConsole
+          output={output}
+          status={status}
+        />
       </main>
 
       <footer>
