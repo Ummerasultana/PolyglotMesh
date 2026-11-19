@@ -6,10 +6,12 @@ import "./App.css";
 function App() {
   const [language, setLanguage] = useState("python");
 
-  // Store separate code for each language
+  // Separate code storage for each language
   const [codes, setCodes] = useState({
     python: 'print("Hello PolyglotMesh!")',
+
     javascript: 'console.log("Hello PolyglotMesh!");',
+
     java: `public class Main {
     public static void main(String[] args) {
         System.out.println("Hello PolyglotMesh!");
@@ -20,10 +22,14 @@ function App() {
   const [output, setOutput] = useState("");
   const [status, setStatus] = useState("Ready");
 
-  // Get code for the currently selected language
+  // Current language code
   const code = codes[language];
 
-  // Update only the selected language's code
+  // Calculate code statistics
+  const lineCount = code.split("\n").length;
+  const characterCount = code.length;
+
+  // Update editor code
   const handleCodeChange = (newCode) => {
     setCodes((previousCodes) => ({
       ...previousCodes,
@@ -31,7 +37,7 @@ function App() {
     }));
   };
 
-  // Change language without losing previous code
+  // Change language
   const handleLanguageChange = (newLanguage) => {
     setLanguage(newLanguage);
     setOutput("");
@@ -41,12 +47,13 @@ function App() {
   // Temporary Run button
   const handleRun = () => {
     setStatus("Frontend ready");
+
     setOutput(
       "Frontend is working!\nBackend connection will be added later."
     );
   };
 
-  // Clear only the current language's editor
+  // Clear current language code
   const handleClear = () => {
     setCodes((previousCodes) => ({
       ...previousCodes,
@@ -65,13 +72,20 @@ function App() {
 
   return (
     <div className="app">
+
+      {/* Header */}
       <header className="header">
         <h1>PolyglotMesh</h1>
         <p>Multi-Language Runtime Sandbox</p>
       </header>
 
+      {/* Main Dashboard */}
       <main className="dashboard">
+
+        {/* Toolbar */}
         <div className="toolbar">
+
+          {/* Language Tabs */}
           <div className="language-tabs">
             {languages.map((item) => (
               <button
@@ -84,34 +98,54 @@ function App() {
             ))}
           </div>
 
+          {/* Action Buttons */}
           <div className="actions">
-            <button className="clear-btn" onClick={handleClear}>
+            <button
+              className="clear-btn"
+              onClick={handleClear}
+            >
               Clear
             </button>
 
-            <button className="run-btn" onClick={handleRun}>
+            <button
+              className="run-btn"
+              onClick={handleRun}
+            >
               ▶ Run
             </button>
           </div>
         </div>
 
+        {/* Editor Heading */}
         <h3>Code Editor - {language}</h3>
 
+        {/* Monaco Editor */}
         <CodeEditor
           language={language}
           code={code}
           setCode={handleCodeChange}
         />
 
+        {/* Code Statistics */}
+        <div className="code-stats">
+          <span>Language: {language}</span>
+          <span>Lines: {lineCount}</span>
+          <span>Characters: {characterCount}</span>
+        </div>
+
+        {/* Output Console */}
         <OutputConsole
           output={output}
           status={status}
         />
+
       </main>
 
+      {/* Footer */}
       <footer>
         PolyglotMesh | Built with React and Monaco Editor
       </footer>
+
     </div>
   );
 }
