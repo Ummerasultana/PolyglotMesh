@@ -148,3 +148,18 @@ footer {
     flex-direction: column;
   }
 }
+.save-btn {
+  background: #244c80;
+  color: white;
+}
+
+.load-btn {
+  background: #7352a3;
+  color: white;
+}
+
+.save-btn:hover,
+.load-btn:hover,
+.run-btn:hover {
+  opacity: 0.85;
+}

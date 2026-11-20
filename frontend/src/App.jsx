@@ -6,7 +6,7 @@ import "./App.css";
 function App() {
   const [language, setLanguage] = useState("python");
 
-  // Separate code storage for each language
+  // Separate code for each language
   const [codes, setCodes] = useState({
     python: 'print("Hello PolyglotMesh!")',
 
@@ -25,7 +25,7 @@ function App() {
   // Current language code
   const code = codes[language];
 
-  // Calculate code statistics
+  // Code statistics
   const lineCount = code.split("\n").length;
   const characterCount = code.length;
 
@@ -44,16 +44,15 @@ function App() {
     setStatus("Ready");
   };
 
-  // Temporary Run button
+  // Run button (temporary until backend integration)
   const handleRun = () => {
     setStatus("Frontend ready");
-
     setOutput(
       "Frontend is working!\nBackend connection will be added later."
     );
   };
 
-  // Clear current language code
+  // Clear current editor
   const handleClear = () => {
     setCodes((previousCodes) => ({
       ...previousCodes,
@@ -62,6 +61,62 @@ function App() {
 
     setOutput("");
     setStatus("Ready");
+  };
+
+  // SAVE CODE
+  const handleSave = () => {
+    try {
+      const savedCodes = JSON.parse(
+        localStorage.getItem("polyglotmesh_codes") || "{}"
+      );
+
+      savedCodes[language] = code;
+
+      localStorage.setItem(
+        "polyglotmesh_codes",
+        JSON.stringify(savedCodes)
+      );
+
+      setStatus("Saved");
+      setOutput(
+        `${language.toUpperCase()} code saved successfully!`
+      );
+    } catch (error) {
+      setStatus("Save failed");
+      setOutput("Unable to save code: " + error.message);
+    }
+  };
+
+  // LOAD CODE
+  const handleLoad = () => {
+    try {
+      const savedCodes = JSON.parse(
+        localStorage.getItem("polyglotmesh_codes") || "{}"
+      );
+
+      if (
+        Object.prototype.hasOwnProperty.call(savedCodes, language) &&
+        typeof savedCodes[language] === "string"
+      ) {
+        setCodes((previousCodes) => ({
+          ...previousCodes,
+          [language]: savedCodes[language]
+        }));
+
+        setStatus("Loaded");
+        setOutput(
+          `${language.toUpperCase()} code loaded successfully!`
+        );
+      } else {
+        setStatus("No saved code");
+        setOutput(
+          `No saved ${language.toUpperCase()} code found.`
+        );
+      }
+    } catch (error) {
+      setStatus("Load failed");
+      setOutput("Unable to load code: " + error.message);
+    }
   };
 
   const languages = [
@@ -79,7 +134,6 @@ function App() {
         <p>Multi-Language Runtime Sandbox</p>
       </header>
 
-      {/* Main Dashboard */}
       <main className="dashboard">
 
         {/* Toolbar */}
@@ -100,6 +154,7 @@ function App() {
 
           {/* Action Buttons */}
           <div className="actions">
+
             <button
               className="clear-btn"
               onClick={handleClear}
@@ -108,18 +163,32 @@ function App() {
             </button>
 
             <button
+              className="save-btn"
+              onClick={handleSave}
+            >
+              Save Code
+            </button>
+
+            <button
+              className="load-btn"
+              onClick={handleLoad}
+            >
+              Load Code
+            </button>
+
+            <button
               className="run-btn"
               onClick={handleRun}
             >
               ▶ Run
             </button>
+
           </div>
         </div>
 
-        {/* Editor Heading */}
+        {/* Editor */}
         <h3>Code Editor - {language}</h3>
 
-        {/* Monaco Editor */}
         <CodeEditor
           language={language}
           code={code}
@@ -141,7 +210,6 @@ function App() {
 
       </main>
 
-      {/* Footer */}
       <footer>
         PolyglotMesh | Built with React and Monaco Editor
       </footer>
