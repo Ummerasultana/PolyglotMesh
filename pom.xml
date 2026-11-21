@@ -18,6 +18,7 @@
 
     <properties>
         <java.version>25</java.version>
+        <graalvm.version>25.3.4.1</graalvm.version>
     </properties>
 
     <dependencies>
@@ -45,6 +46,21 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
+
+        <!-- GraalVM Polyglot API -->
+        <dependency>
+            <groupId>org.graalvm.polyglot</groupId>
+            <artifactId>polyglot</artifactId>
+            <version>${graalvm.version}</version>
+        </dependency>
+
+        <!-- GraalJS -->
+        <dependency>
+            <groupId>org.graalvm.polyglot</groupId>
+            <artifactId>js</artifactId>
+            <version>${graalvm.version}</version>
+            <type>pom</type>
         </dependency>
 
         <!-- Testing -->
