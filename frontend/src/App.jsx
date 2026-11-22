@@ -6,7 +6,7 @@ import "./App.css";
 function App() {
   const [language, setLanguage] = useState("python");
 
-  // Separate code for each language
+  // Separate code storage for each language
   const [codes, setCodes] = useState({
     python: 'print("Hello PolyglotMesh!")',
 
@@ -44,15 +44,34 @@ function App() {
     setStatus("Ready");
   };
 
-  // Run button (temporary until backend integration)
+  // RUN BUTTON WITH VALIDATION
   const handleRun = () => {
-    setStatus("Frontend ready");
+
+    // Remove previous output
+    setOutput("");
+
+    // Check whether code is empty
+    if (!code.trim()) {
+      setStatus("Validation Error");
+      setOutput(
+        "Error: No code found!\nPlease write some code before clicking Run."
+      );
+      return;
+    }
+
+    // Code is present
+    setStatus("Ready to Execute");
+
     setOutput(
-      "Frontend is working!\nBackend connection will be added later."
+      "Your code has passed input validation!\n\n" +
+      "Selected Language: " + language.toUpperCase() +
+      "\nLines of Code: " + lineCount +
+      "\nCharacters: " + characterCount +
+      "\n\nWaiting for backend connection..."
     );
   };
 
-  // Clear current editor
+  // CLEAR BUTTON
   const handleClear = () => {
     setCodes((previousCodes) => ({
       ...previousCodes,
@@ -79,10 +98,10 @@ function App() {
 
       setStatus("Saved");
       setOutput(
-        `${language.toUpperCase()} code saved successfully!`
+        language.toUpperCase() + " code saved successfully!"
       );
     } catch (error) {
-      setStatus("Save failed");
+      setStatus("Save Failed");
       setOutput("Unable to save code: " + error.message);
     }
   };
@@ -105,16 +124,16 @@ function App() {
 
         setStatus("Loaded");
         setOutput(
-          `${language.toUpperCase()} code loaded successfully!`
+          language.toUpperCase() + " code loaded successfully!"
         );
       } else {
-        setStatus("No saved code");
+        setStatus("No Saved Code");
         setOutput(
-          `No saved ${language.toUpperCase()} code found.`
+          "No saved code found for " + language.toUpperCase() + "."
         );
       }
     } catch (error) {
-      setStatus("Load failed");
+      setStatus("Load Failed");
       setOutput("Unable to load code: " + error.message);
     }
   };
