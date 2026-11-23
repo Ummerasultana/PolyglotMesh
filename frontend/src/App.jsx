@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import CodeEditor from "./components/CodeEditor";
 import OutputConsole from "./components/OutputConsole";
 import "./App.css";
@@ -9,9 +9,7 @@ function App() {
   // Separate code storage for each language
   const [codes, setCodes] = useState({
     python: 'print("Hello PolyglotMesh!")',
-
     javascript: 'console.log("Hello PolyglotMesh!");',
-
     java: `public class Main {
     public static void main(String[] args) {
         System.out.println("Hello PolyglotMesh!");
@@ -22,14 +20,14 @@ function App() {
   const [output, setOutput] = useState("");
   const [status, setStatus] = useState("Ready");
 
-  // Current language code
+  // Current editor code
   const code = codes[language];
 
   // Code statistics
   const lineCount = code.split("\n").length;
   const characterCount = code.length;
 
-  // Update editor code
+  // Update code
   const handleCodeChange = (newCode) => {
     setCodes((previousCodes) => ({
       ...previousCodes,
@@ -44,13 +42,10 @@ function App() {
     setStatus("Ready");
   };
 
-  // RUN BUTTON WITH VALIDATION
-  const handleRun = () => {
-
-    // Remove previous output
+  // Run with input validation
+  const handleRun = useCallback(() => {
     setOutput("");
 
-    // Check whether code is empty
     if (!code.trim()) {
       setStatus("Validation Error");
       setOutput(
@@ -59,7 +54,6 @@ function App() {
       return;
     }
 
-    // Code is present
     setStatus("Ready to Execute");
 
     setOutput(
@@ -69,9 +63,9 @@ function App() {
       "\nCharacters: " + characterCount +
       "\n\nWaiting for backend connection..."
     );
-  };
+  }, [code, language, lineCount, characterCount]);
 
-  // CLEAR BUTTON
+  // Clear editor
   const handleClear = () => {
     setCodes((previousCodes) => ({
       ...previousCodes,
@@ -82,8 +76,8 @@ function App() {
     setStatus("Ready");
   };
 
-  // SAVE CODE
-  const handleSave = () => {
+  // Save code
+  const handleSave = useCallback(() => {
     try {
       const savedCodes = JSON.parse(
         localStorage.getItem("polyglotmesh_codes") || "{}"
@@ -104,10 +98,10 @@ function App() {
       setStatus("Save Failed");
       setOutput("Unable to save code: " + error.message);
     }
-  };
+  }, [language, code]);
 
-  // LOAD CODE
-  const handleLoad = () => {
+  // Load code
+  const handleLoad = useCallback(() => {
     try {
       const savedCodes = JSON.parse(
         localStorage.getItem("polyglotmesh_codes") || "{}"
@@ -136,7 +130,46 @@ function App() {
       setStatus("Load Failed");
       setOutput("Unable to load code: " + error.message);
     }
+  }, [language]);
+
+  // Clear only the output console
+  const handleClearOutput = () => {
+    setOutput("");
+    setStatus("Ready");
   };
+
+  // Keyboard shortcuts
+  useEffect(() => {
+    const handleKeyboardShortcuts = (event) => {
+      if (!event.ctrlKey) return;
+
+      const key = event.key.toLowerCase();
+
+      // Ctrl + Enter = Run
+      if (key === "enter") {
+        event.preventDefault();
+        handleRun();
+      }
+
+      // Ctrl + S = Save
+      if (key === "s") {
+        event.preventDefault();
+        handleSave();
+      }
+
+      // Ctrl + Shift + L = Load
+      if (key === "l" && event.shiftKey) {
+        event.preventDefault();
+        handleLoad();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyboardShortcuts);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyboardShortcuts);
+    };
+  }, [handleRun, handleSave, handleLoad]);
 
   const languages = [
     { label: "Python", value: "python" },
@@ -158,7 +191,6 @@ function App() {
         {/* Toolbar */}
         <div className="toolbar">
 
-          {/* Language Tabs */}
           <div className="language-tabs">
             {languages.map((item) => (
               <button
@@ -177,6 +209,7 @@ function App() {
             <button
               className="clear-btn"
               onClick={handleClear}
+              title="Clear current editor"
             >
               Clear
             </button>
@@ -184,6 +217,7 @@ function App() {
             <button
               className="save-btn"
               onClick={handleSave}
+              title="Shortcut: Ctrl + S"
             >
               Save Code
             </button>
@@ -191,6 +225,7 @@ function App() {
             <button
               className="load-btn"
               onClick={handleLoad}
+              title="Shortcut: Ctrl + Shift + L"
             >
               Load Code
             </button>
@@ -198,6 +233,7 @@ function App() {
             <button
               className="run-btn"
               onClick={handleRun}
+              title="Shortcut: Ctrl + Enter"
             >
               ▶ Run
             </button>
@@ -206,7 +242,12 @@ function App() {
         </div>
 
         {/* Editor */}
-        <h3>Code Editor - {language}</h3>
+        <div className="editor-heading">
+          <h3>Code Editor - {language}</h3>
+          <span className="editor-language">
+            {language.toUpperCase()}
+          </span>
+        </div>
 
         <CodeEditor
           language={language}
@@ -221,11 +262,33 @@ function App() {
           <span>Characters: {characterCount}</span>
         </div>
 
+        {/* Output Console Heading */}
+        <div className="console-toolbar">
+          <h3>Output Console</h3>
+
+          <button
+            className="console-clear-btn"
+            onClick={handleClearOutput}
+          >
+            Clear Output
+          </button>
+        </div>
+
         {/* Output Console */}
         <OutputConsole
           output={output}
           status={status}
         />
+
+        {/* Keyboard Shortcut Guide */}
+        <div className="shortcuts">
+          <h4>Keyboard Shortcuts</h4>
+          <div className="shortcut-list">
+            <span>Ctrl + Enter : Run</span>
+            <span>Ctrl + S : Save</span>
+            <span>Ctrl + Shift + L : Load</span>
+          </div>
+        </div>
 
       </main>
 
