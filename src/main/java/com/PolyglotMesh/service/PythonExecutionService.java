@@ -1,6 +1,8 @@
 package com.PolyglotMesh.service;
 
+import jakarta.annotation.PreDestroy;
 import org.graalvm.polyglot.Context;
+import org.graalvm.polyglot.Engine;
 import org.graalvm.polyglot.PolyglotException;
 import org.graalvm.polyglot.ResourceLimits;
 import org.graalvm.polyglot.Value;
@@ -13,6 +15,14 @@ public class PythonExecutionService {
 
     private static final long TIMEOUT_SECONDS = 5;
     private static final long STATEMENT_LIMIT = 1_000_000;
+
+    /*
+     * Shared GraalVM Engine.
+     *
+     * The engine is created once instead of creating the
+     * complete Python runtime for every request.
+     */
+    private final Engine engine = Engine.newBuilder().build();
 
     public String executePython(String code) {
 
@@ -29,6 +39,7 @@ public class PythonExecutionService {
                 try {
 
                     try (Context context = Context.newBuilder("python")
+                            .engine(engine)
                             .allowHostAccess(org.graalvm.polyglot.HostAccess.NONE)
                             .allowHostClassLookup(className -> false)
                             .allowIO(false)
@@ -88,5 +99,10 @@ public class PythonExecutionService {
 
             executor.shutdownNow();
         }
+    }
+
+    @PreDestroy
+    public void shutdownEngine() {
+        engine.close();
     }
 }
