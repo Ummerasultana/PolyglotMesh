@@ -26,38 +26,35 @@ public class PolyglotExecutionService {
                         .statementLimit(STATEMENT_LIMIT, null)
                         .build();
 
-                try (Context context = Context.newBuilder("js")
-                        .allowHostAccess(org.graalvm.polyglot.HostAccess.NONE)
-                        .allowHostClassLookup(className -> false)
-                        .allowIO(false)
-                        .allowNativeAccess(false)
-                        .allowCreateThread(false)
-                        .resourceLimits(limits)
-                        .build()) {
+                try {
 
-                    try {
+                    try (Context context = Context.newBuilder("js")
+                            .allowHostAccess(org.graalvm.polyglot.HostAccess.NONE)
+                            .allowHostClassLookup(className -> false)
+                            .allowIO(false)
+                            .allowNativeAccess(false)
+                            .allowCreateThread(false)
+                            .resourceLimits(limits)
+                            .build()) {
 
                         Value result = context.eval("js", code);
 
                         return result.toString();
-
-                    } catch (PolyglotException e) {
-
-                        String message = e.getMessage();
-
-                        if (message != null &&
-                                (message.contains("Statement count limit")
-                                        || message.contains("Resource limit"))) {
-
-                            return "Execution error: Resource limit exceeded.";
-                        }
-
-                        if (e.isCancelled()) {
-                            return "Execution error: Resource limit exceeded.";
-                        }
-
-                        return "Execution error: " + message;
                     }
+
+                } catch (PolyglotException e) {
+
+                    // Resource limit reached
+                    if (e.isResourceExhausted() || e.isCancelled()) {
+                        return "Execution error: Resource limit exceeded.";
+                    }
+
+                    // Other guest-code errors
+                    return "Execution error: " + e.getMessage();
+
+                } catch (Exception e) {
+
+                    return "Execution error: " + e.getMessage();
                 }
             });
 
@@ -67,9 +64,27 @@ public class PolyglotExecutionService {
 
             return "Execution error: Code execution timed out.";
 
-        } catch (Exception e) {
+        } catch (InterruptedException e) {
 
-            return "Execution error: " + e.getMessage();
+            Thread.currentThread().interrupt();
+            return "Execution error: Execution interrupted.";
+
+        } catch (ExecutionException e) {
+
+            Throwable cause = e.getCause();
+
+            if (cause instanceof PolyglotException polyglotException) {
+
+                if (polyglotException.isResourceExhausted()
+                        || polyglotException.isCancelled()) {
+
+                    return "Execution error: Resource limit exceeded.";
+                }
+
+                return "Execution error: " + polyglotException.getMessage();
+            }
+
+            return "Execution error: " + cause.getMessage();
 
         } finally {
 
