@@ -6,7 +6,7 @@ import "./App.css";
 function App() {
   const [language, setLanguage] = useState("python");
 
-  // Separate code storage for each language
+  // Separate code for each language
   const [codes, setCodes] = useState({
     python: 'print("Hello PolyglotMesh!")',
     javascript: 'console.log("Hello PolyglotMesh!");',
@@ -42,7 +42,7 @@ function App() {
     setStatus("Ready");
   };
 
-  // Run with input validation
+  // Run code validation
   const handleRun = useCallback(() => {
     setOutput("");
 
@@ -132,7 +132,7 @@ function App() {
     }
   }, [language]);
 
-  // Clear only the output console
+  // Clear output only
   const handleClearOutput = () => {
     setOutput("");
     setStatus("Ready");
@@ -145,19 +145,16 @@ function App() {
 
       const key = event.key.toLowerCase();
 
-      // Ctrl + Enter = Run
       if (key === "enter") {
         event.preventDefault();
         handleRun();
       }
 
-      // Ctrl + S = Save
       if (key === "s") {
         event.preventDefault();
         handleSave();
       }
 
-      // Ctrl + Shift + L = Load
       if (key === "l" && event.shiftKey) {
         event.preventDefault();
         handleLoad();
@@ -167,7 +164,10 @@ function App() {
     window.addEventListener("keydown", handleKeyboardShortcuts);
 
     return () => {
-      window.removeEventListener("keydown", handleKeyboardShortcuts);
+      window.removeEventListener(
+        "keydown",
+        handleKeyboardShortcuts
+      );
     };
   }, [handleRun, handleSave, handleLoad]);
 
@@ -182,11 +182,32 @@ function App() {
 
       {/* Header */}
       <header className="header">
-        <h1>PolyglotMesh</h1>
-        <p>Multi-Language Runtime Sandbox</p>
+        <div className="header-content">
+          <div className="brand">
+            <div className="brand-icon">PM</div>
+            <div>
+              <h1>PolyglotMesh</h1>
+              <p>Multi-Language Runtime Sandbox</p>
+            </div>
+          </div>
+
+          <div className="header-status">
+            <span className="status-dot"></span>
+            Frontend Active
+          </div>
+        </div>
       </header>
 
+      {/* Main Dashboard */}
       <main className="dashboard">
+
+        <div className="welcome-section">
+          <div>
+            <h2>Code Playground</h2>
+            <p>Write, manage and prepare your code for execution.</p>
+          </div>
+          <span className="project-tag">Developer Workspace</span>
+        </div>
 
         {/* Toolbar */}
         <div className="toolbar">
@@ -195,21 +216,22 @@ function App() {
             {languages.map((item) => (
               <button
                 key={item.value}
-                className={language === item.value ? "active" : ""}
-                onClick={() => handleLanguageChange(item.value)}
+                className={
+                  language === item.value ? "active" : ""
+                }
+                onClick={() =>
+                  handleLanguageChange(item.value)
+                }
               >
                 {item.label}
               </button>
             ))}
           </div>
 
-          {/* Action Buttons */}
           <div className="actions">
-
             <button
               className="clear-btn"
               onClick={handleClear}
-              title="Clear current editor"
             >
               Clear
             </button>
@@ -217,7 +239,6 @@ function App() {
             <button
               className="save-btn"
               onClick={handleSave}
-              title="Shortcut: Ctrl + S"
             >
               Save Code
             </button>
@@ -225,7 +246,6 @@ function App() {
             <button
               className="load-btn"
               onClick={handleLoad}
-              title="Shortcut: Ctrl + Shift + L"
             >
               Load Code
             </button>
@@ -233,67 +253,80 @@ function App() {
             <button
               className="run-btn"
               onClick={handleRun}
-              title="Shortcut: Ctrl + Enter"
             >
               ▶ Run
             </button>
-
           </div>
         </div>
 
-        {/* Editor */}
-        <div className="editor-heading">
-          <h3>Code Editor - {language}</h3>
-          <span className="editor-language">
-            {language.toUpperCase()}
-          </span>
-        </div>
+        {/* Editor Section */}
+        <section className="editor-section">
+          <div className="section-heading">
+            <div>
+              <h3>Code Editor</h3>
+              <p>Currently editing: {language.toUpperCase()}</p>
+            </div>
 
-        <CodeEditor
-          language={language}
-          code={code}
-          setCode={handleCodeChange}
-        />
+            <span className="editor-badge">
+              {language.toUpperCase()}
+            </span>
+          </div>
 
-        {/* Code Statistics */}
-        <div className="code-stats">
-          <span>Language: {language}</span>
-          <span>Lines: {lineCount}</span>
-          <span>Characters: {characterCount}</span>
-        </div>
+          <CodeEditor
+            language={language}
+            code={code}
+            setCode={handleCodeChange}
+          />
 
-        {/* Output Console Heading */}
-        <div className="console-toolbar">
-          <h3>Output Console</h3>
+          {/* Statistics */}
+          <div className="code-stats">
+            <span>Language: {language}</span>
+            <span>Lines: {lineCount}</span>
+            <span>Characters: {characterCount}</span>
+          </div>
+        </section>
 
-          <button
-            className="console-clear-btn"
-            onClick={handleClearOutput}
-          >
-            Clear Output
-          </button>
-        </div>
+        {/* Output Section */}
+        <section className="output-section">
+          <div className="section-heading">
+            <div>
+              <h3>Output Console</h3>
+              <p>Execution messages and validation results</p>
+            </div>
 
-        {/* Output Console */}
-        <OutputConsole
-          output={output}
-          status={status}
-        />
+            <button
+              className="console-clear-btn"
+              onClick={handleClearOutput}
+            >
+              Clear Output
+            </button>
+          </div>
 
-        {/* Keyboard Shortcut Guide */}
-        <div className="shortcuts">
-          <h4>Keyboard Shortcuts</h4>
+          <OutputConsole
+            output={output}
+            status={status}
+          />
+        </section>
+
+        {/* Keyboard Shortcuts */}
+        <section className="shortcuts">
+          <h3>Keyboard Shortcuts</h3>
+
           <div className="shortcut-list">
-            <span>Ctrl + Enter : Run</span>
-            <span>Ctrl + S : Save</span>
-            <span>Ctrl + Shift + L : Load</span>
+            <span><kbd>Ctrl</kbd> + <kbd>Enter</kbd> Run</span>
+            <span><kbd>Ctrl</kbd> + <kbd>S</kbd> Save</span>
+            <span>
+              <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>L</kbd> Load
+            </span>
           </div>
-        </div>
+        </section>
 
       </main>
 
+      {/* Footer */}
       <footer>
-        PolyglotMesh | Built with React and Monaco Editor
+        <strong>PolyglotMesh</strong>
+        <span>Built with React and Monaco Editor</span>
       </footer>
 
     </div>

@@ -6,6 +6,7 @@ body {
   margin: 0;
   font-family: Arial, sans-serif;
   background: #eef2f7;
+  color: #24364b;
 }
 
 .app {
@@ -16,27 +17,98 @@ body {
 .header {
   background: #14243b;
   color: white;
-  padding: 22px 35px;
+  padding: 20px 35px;
+}
+
+.header-content {
+  max-width: 1200px;
+  margin: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+}
+
+.brand-icon {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  background: #315d91;
+  border-radius: 10px;
+  font-weight: bold;
+  font-size: 16px;
 }
 
 .header h1 {
   margin: 0;
-  font-size: 28px;
+  font-size: 25px;
 }
 
 .header p {
+  margin: 5px 0 0;
   color: #b9c9dc;
-  margin-bottom: 0;
+  font-size: 13px;
+}
+
+.header-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #d8e5f4;
+  font-size: 13px;
+}
+
+.status-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #35c77b;
 }
 
 /* Dashboard */
 .dashboard {
-  max-width: 1100px;
+  max-width: 1150px;
   margin: 30px auto;
-  padding: 20px;
+  padding: 25px;
   background: white;
-  border-radius: 12px;
-  box-shadow: 0 3px 15px #00000012;
+  border-radius: 14px;
+  box-shadow: 0 4px 20px #0000000d;
+}
+
+/* Welcome Section */
+.welcome-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 25px;
+}
+
+.welcome-section h2 {
+  margin: 0;
+  font-size: 23px;
+}
+
+.welcome-section p {
+  color: #718096;
+  font-size: 13px;
+  margin: 7px 0 0;
+}
+
+.project-tag {
+  background: #edf3fa;
+  color: #315d91;
+  padding: 8px 12px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: bold;
 }
 
 /* Toolbar */
@@ -44,36 +116,42 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 12px;
   flex-wrap: wrap;
-  margin-bottom: 20px;
+  gap: 14px;
+  margin-bottom: 25px;
 }
 
 .language-tabs,
 .actions {
   display: flex;
-  gap: 8px;
   flex-wrap: wrap;
+  gap: 8px;
 }
 
 button {
   border: none;
-  padding: 10px 16px;
-  border-radius: 6px;
+  padding: 10px 15px;
+  border-radius: 7px;
   cursor: pointer;
-  font-weight: bold;
-  transition: 0.2s;
+  font-weight: 600;
+  font-size: 13px;
+  transition: background 0.2s, transform 0.2s;
 }
 
 button:hover {
-  opacity: 0.85;
+  opacity: 0.9;
   transform: translateY(-1px);
+}
+
+button:focus-visible {
+  outline: 2px solid #315d91;
+  outline-offset: 2px;
 }
 
 /* Language Buttons */
 .language-tabs button {
-  background: #e5eaf1;
-  color: #24364b;
+  background: #edf1f6;
+  color: #34465c;
 }
 
 .language-tabs button.active {
@@ -82,14 +160,9 @@ button:hover {
 }
 
 /* Action Buttons */
-.run-btn {
-  background: #16834a;
-  color: white;
-}
-
 .clear-btn {
-  background: #e5eaf1;
-  color: #24364b;
+  background: #e8edf3;
+  color: #34465c;
 }
 
 .save-btn {
@@ -102,27 +175,50 @@ button:hover {
   color: white;
 }
 
-/* Editor Heading */
-.editor-heading {
+.run-btn {
+  background: #16834a;
+  color: white;
+}
+
+/* Editor and Output Sections */
+.editor-section,
+.output-section {
+  margin-top: 22px;
+}
+
+.section-heading {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
 }
 
-.dashboard h3 {
+.section-heading h3 {
+  margin: 0;
+  font-size: 17px;
   color: #24364b;
 }
 
-.editor-language {
+.section-heading p {
+  margin: 5px 0 0;
+  color: #8290a2;
   font-size: 12px;
-  color: #607086;
+}
+
+.editor-badge {
+  background: #eaf1f9;
+  color: #315d91;
+  padding: 7px 11px;
+  border-radius: 6px;
+  font-size: 11px;
   font-weight: bold;
 }
 
 /* Monaco Editor */
 .editor-box {
   overflow: hidden;
-  border-radius: 8px;
+  border-radius: 9px;
   border: 1px solid #27364a;
 }
 
@@ -132,42 +228,30 @@ button:hover {
   justify-content: space-between;
   flex-wrap: wrap;
   gap: 10px;
-  padding: 12px 15px;
-  background: #eaf0f7;
-  color: #34465c;
-  font-size: 13px;
+  padding: 13px 15px;
+  background: #edf3f9;
+  color: #40536a;
+  font-size: 12px;
   border-radius: 0 0 8px 8px;
   margin-top: 5px;
   font-weight: 600;
 }
 
-/* Console Toolbar */
-.console-toolbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 20px;
-  gap: 10px;
-}
-
-.console-toolbar h3 {
-  margin-bottom: 10px;
-}
-
+/* Console */
 .console-clear-btn {
-  background: #e5eaf1;
-  color: #24364b;
+  background: #e8edf3;
+  color: #34465c;
   font-size: 12px;
 }
 
-/* Output Console */
 .console-box {
   background: #101c2b;
   color: #dce7f5;
-  border-radius: 8px;
+  border-radius: 9px;
   margin-top: 10px;
-  padding: 15px;
-  min-height: 130px;
+  padding: 16px;
+  min-height: 135px;
+  border: 1px solid #26364b;
 }
 
 .console-heading {
@@ -182,54 +266,87 @@ button:hover {
   white-space: pre-wrap;
   overflow-wrap: anywhere;
   font-family: Consolas, monospace;
-  line-height: 1.6;
+  font-size: 13px;
+  line-height: 1.7;
 }
 
 /* Keyboard Shortcuts */
 .shortcuts {
-  margin-top: 22px;
-  padding: 15px;
-  background: #f2f5f9;
-  border-radius: 8px;
+  margin-top: 25px;
+  padding: 17px;
+  background: #f3f6fa;
+  border: 1px solid #e5ebf2;
+  border-radius: 9px;
 }
 
-.shortcuts h4 {
-  margin: 0 0 12px;
-  color: #24364b;
+.shortcuts h3 {
+  margin: 0 0 13px;
+  font-size: 15px;
 }
 
 .shortcut-list {
   display: flex;
-  gap: 12px;
   flex-wrap: wrap;
+  gap: 12px;
 }
 
 .shortcut-list span {
-  background: white;
-  color: #34465c;
-  border: 1px solid #dce3ec;
-  border-radius: 5px;
-  padding: 8px 10px;
+  color: #52647a;
   font-size: 12px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+kbd {
+  background: white;
+  border: 1px solid #d5deea;
+  border-radius: 4px;
+  padding: 4px 7px;
+  color: #24364b;
+  font-family: Arial, sans-serif;
+  font-size: 11px;
+  box-shadow: 0 1px 1px #00000010;
 }
 
 /* Footer */
 footer {
-  text-align: center;
-  padding: 20px;
-  color: #607086;
-  font-size: 13px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding: 22px;
+  color: #758398;
+  font-size: 12px;
 }
 
-/* Mobile Responsive */
-@media (max-width: 600px) {
+footer strong {
+  color: #315d91;
+}
+
+/* Responsive Design */
+@media (max-width: 700px) {
   .header {
-    padding: 18px;
+    padding: 17px;
+  }
+
+  .header h1 {
+    font-size: 21px;
+  }
+
+  .header-status {
+    font-size: 11px;
   }
 
   .dashboard {
-    margin: 12px;
-    padding: 12px;
+    margin: 14px;
+    padding: 15px;
+  }
+
+  .welcome-section {
+    align-items: flex-start;
+    flex-direction: column;
   }
 
   .toolbar {
@@ -237,6 +354,7 @@ footer {
     flex-direction: column;
   }
 
+  .language-tabs,
   .actions {
     width: 100%;
   }
@@ -245,7 +363,32 @@ footer {
     flex: 1;
   }
 
+  .code-stats {
+    justify-content: flex-start;
+  }
+
   .shortcut-list {
     flex-direction: column;
+  }
+}
+
+@media (max-width: 420px) {
+  .header-content {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .dashboard {
+    margin: 8px;
+    padding: 12px;
+  }
+
+  .actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .section-heading {
+    align-items: flex-start;
   }
 }
