@@ -93,14 +93,14 @@ PolyglotMesh
 
 PolyglotMesh executes user-provided code inside restricted GraalVM contexts.
 
-The execution environment applies the following security restrictions:
+The execution environment applies the following security restrictions.
 
 ### Host Access
 
 Host access is disabled:
 
 ```java
-.allowHostAccess(HostAccess.NONE);
+.allowHostAccess(org.graalvm.polyglot.HostAccess.NONE)
 ```
 
 This prevents guest code from directly accessing Java host objects.
@@ -110,7 +110,7 @@ This prevents guest code from directly accessing Java host objects.
 Host class lookup is disabled:
 
 ```java
-.allowHostClassLookup(className -> false);
+.allowHostClassLookup(className -> false)
 ```
 
 This prevents guest code from loading Java classes.
@@ -128,7 +128,7 @@ is blocked.
 File and IO access are disabled:
 
 ```java
-.allowIO(false);
+.allowIO(false)
 ```
 
 This prevents guest programs from directly accessing the host filesystem and other IO resources.
@@ -138,7 +138,7 @@ This prevents guest programs from directly accessing the host filesystem and oth
 Native access is disabled:
 
 ```java
-.allowNativeAccess(false);
+.allowNativeAccess(false)
 ```
 
 ### Guest Thread Creation
@@ -146,7 +146,7 @@ Native access is disabled:
 Guest-created threads are disabled:
 
 ```java
-.allowCreateThread(false);
+.allowCreateThread(false)
 ```
 
 These restrictions follow a least-privilege approach for executing untrusted guest code.
@@ -234,23 +234,17 @@ Example request:
 }
 ```
 
----
-
 ### Get All Scripts
 
 ```http
 GET /api/scripts
 ```
 
----
-
 ### Get Script by ID
 
 ```http
 GET /api/scripts/{id}
 ```
-
----
 
 ### Update Script
 
@@ -267,8 +261,6 @@ Example:
   "code": "10 * 5"
 }
 ```
-
----
 
 ### Delete Script
 
@@ -297,8 +289,6 @@ Response:
 ```text
 50
 ```
-
----
 
 ## Python
 
@@ -446,7 +436,7 @@ http://localhost:8081
 
 # 🧪 Example Testing
 
-### JavaScript Execution
+## JavaScript Execution
 
 PowerShell:
 
@@ -464,7 +454,7 @@ Response:
 50
 ```
 
-### Infinite Loop Protection
+## Infinite Loop Protection
 
 ```powershell
 Invoke-RestMethod `
@@ -480,7 +470,7 @@ Response:
 Execution error: Resource limit exceeded.
 ```
 
-### Host Access Protection
+## Host Access Protection
 
 ```javascript
 Java.type('java.lang.System').getProperty('java.version')
@@ -583,7 +573,7 @@ The security layer focuses on:
 | JUnit security tests | ✅ Completed |
 | GraalPy dependency | ✅ Added |
 | Python execution service | ✅ Implemented |
-| Python execution API | ✅ Implemented |
+| Python execution API | 🔄 Testing |
 | Extended Python testing | 🔄 In Progress |
 | Further QA and deployment validation | 🔄 In Progress |
 
