@@ -1,6 +1,8 @@
 package com.PolyglotMesh.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+
 import java.time.LocalDateTime;
 
 @Entity
@@ -11,12 +13,15 @@ public class Script {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank(message = "Script name is required")
     @Column(nullable = false)
     private String name;
 
+    @NotBlank(message = "Programming language is required")
     @Column(nullable = false)
     private String language;
 
+    @NotBlank(message = "Script code is required")
     @Lob
     @Column(nullable = false, columnDefinition = "LONGTEXT")
     private String code;

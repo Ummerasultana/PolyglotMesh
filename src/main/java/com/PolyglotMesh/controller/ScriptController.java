@@ -2,6 +2,7 @@ package com.PolyglotMesh.controller;
 
 import com.PolyglotMesh.entity.Script;
 import com.PolyglotMesh.service.ScriptService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,7 +20,9 @@ public class ScriptController {
 
     // Save a new script
     @PostMapping
-    public ResponseEntity<Script> createScript(@RequestBody Script script) {
+    public ResponseEntity<Script> createScript(
+            @Valid @RequestBody Script script) {
+
         Script savedScript = scriptService.saveScript(script);
         return ResponseEntity.ok(savedScript);
     }
@@ -42,7 +45,7 @@ public class ScriptController {
     @PutMapping("/{id}")
     public ResponseEntity<Script> updateScript(
             @PathVariable Long id,
-            @RequestBody Script script) {
+            @Valid @RequestBody Script script) {
 
         try {
             Script updatedScript = scriptService.updateScript(id, script);
