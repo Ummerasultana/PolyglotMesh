@@ -82,7 +82,7 @@ body {
   box-shadow: 0 4px 20px #0000000d;
 }
 
-/* Welcome Section */
+/* Welcome */
 .welcome-section {
   display: flex;
   justify-content: space-between;
@@ -180,7 +180,7 @@ button:focus-visible {
   color: white;
 }
 
-/* Editor and Output Sections */
+/* Editor and Output */
 .editor-section,
 .output-section {
   margin-top: 22px;
@@ -215,14 +215,14 @@ button:focus-visible {
   font-weight: bold;
 }
 
-/* Monaco Editor */
+/* Editor */
 .editor-box {
   overflow: hidden;
   border-radius: 9px;
   border: 1px solid #27364a;
 }
 
-/* Code Statistics */
+/* Statistics */
 .code-stats {
   display: flex;
   justify-content: space-between;
@@ -257,9 +257,17 @@ button:focus-visible {
 .console-heading {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   color: #8db6e8;
   font-size: 12px;
   font-weight: bold;
+  gap: 10px;
+}
+
+.console-status {
+  background: #263b54;
+  padding: 5px 10px;
+  border-radius: 5px;
 }
 
 .console-box pre {
@@ -268,6 +276,16 @@ button:focus-visible {
   font-family: Consolas, monospace;
   font-size: 13px;
   line-height: 1.7;
+}
+
+/* Execution Time */
+.execution-time {
+  margin-top: 15px;
+  padding-top: 12px;
+  border-top: 1px solid #34465c;
+  color: #71d6a1;
+  font-size: 12px;
+  font-weight: bold;
 }
 
 /* Keyboard Shortcuts */

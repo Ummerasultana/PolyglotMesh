@@ -6,7 +6,6 @@ import "./App.css";
 function App() {
   const [language, setLanguage] = useState("python");
 
-  // Separate code for each language
   const [codes, setCodes] = useState({
     python: 'print("Hello PolyglotMesh!")',
     javascript: 'console.log("Hello PolyglotMesh!");',
@@ -19,15 +18,14 @@ function App() {
 
   const [output, setOutput] = useState("");
   const [status, setStatus] = useState("Ready");
+  const [executionTime, setExecutionTime] = useState(null);
 
-  // Current editor code
   const code = codes[language];
 
-  // Code statistics
   const lineCount = code.split("\n").length;
   const characterCount = code.length;
 
-  // Update code
+  // Update editor code
   const handleCodeChange = (newCode) => {
     setCodes((previousCodes) => ({
       ...previousCodes,
@@ -40,11 +38,13 @@ function App() {
     setLanguage(newLanguage);
     setOutput("");
     setStatus("Ready");
+    setExecutionTime(null);
   };
 
   // Run code validation
   const handleRun = useCallback(() => {
     setOutput("");
+    setExecutionTime(null);
 
     if (!code.trim()) {
       setStatus("Validation Error");
@@ -54,14 +54,15 @@ function App() {
       return;
     }
 
-    setStatus("Ready to Execute");
+    setStatus("Checking...");
 
     setOutput(
-      "Your code has passed input validation!\n\n" +
+      "Code validation successful!\n\n" +
       "Selected Language: " + language.toUpperCase() +
       "\nLines of Code: " + lineCount +
       "\nCharacters: " + characterCount +
-      "\n\nWaiting for backend connection..."
+      "\n\nWaiting for backend integration...\n" +
+      "Actual code execution is not connected yet."
     );
   }, [code, language, lineCount, characterCount]);
 
@@ -74,6 +75,7 @@ function App() {
 
     setOutput("");
     setStatus("Ready");
+    setExecutionTime(null);
   };
 
   // Save code
@@ -91,9 +93,9 @@ function App() {
       );
 
       setStatus("Saved");
-      setOutput(
-        language.toUpperCase() + " code saved successfully!"
-      );
+      setOutput(language.toUpperCase() + " code saved successfully!");
+      setExecutionTime(null);
+
     } catch (error) {
       setStatus("Save Failed");
       setOutput("Unable to save code: " + error.message);
@@ -117,25 +119,25 @@ function App() {
         }));
 
         setStatus("Loaded");
-        setOutput(
-          language.toUpperCase() + " code loaded successfully!"
-        );
+        setOutput(language.toUpperCase() + " code loaded successfully!");
       } else {
         setStatus("No Saved Code");
-        setOutput(
-          "No saved code found for " + language.toUpperCase() + "."
-        );
+        setOutput("No saved code found for " + language.toUpperCase() + ".");
       }
+
+      setExecutionTime(null);
+
     } catch (error) {
       setStatus("Load Failed");
       setOutput("Unable to load code: " + error.message);
     }
   }, [language]);
 
-  // Clear output only
+  // Clear output
   const handleClearOutput = () => {
     setOutput("");
     setStatus("Ready");
+    setExecutionTime(null);
   };
 
   // Keyboard shortcuts
@@ -164,10 +166,7 @@ function App() {
     window.addEventListener("keydown", handleKeyboardShortcuts);
 
     return () => {
-      window.removeEventListener(
-        "keydown",
-        handleKeyboardShortcuts
-      );
+      window.removeEventListener("keydown", handleKeyboardShortcuts);
     };
   }, [handleRun, handleSave, handleLoad]);
 
@@ -180,7 +179,6 @@ function App() {
   return (
     <div className="app">
 
-      {/* Header */}
       <header className="header">
         <div className="header-content">
           <div className="brand">
@@ -198,7 +196,6 @@ function App() {
         </div>
       </header>
 
-      {/* Main Dashboard */}
       <main className="dashboard">
 
         <div className="welcome-section">
@@ -209,19 +206,14 @@ function App() {
           <span className="project-tag">Developer Workspace</span>
         </div>
 
-        {/* Toolbar */}
         <div className="toolbar">
 
           <div className="language-tabs">
             {languages.map((item) => (
               <button
                 key={item.value}
-                className={
-                  language === item.value ? "active" : ""
-                }
-                onClick={() =>
-                  handleLanguageChange(item.value)
-                }
+                className={language === item.value ? "active" : ""}
+                onClick={() => handleLanguageChange(item.value)}
               >
                 {item.label}
               </button>
@@ -229,37 +221,24 @@ function App() {
           </div>
 
           <div className="actions">
-            <button
-              className="clear-btn"
-              onClick={handleClear}
-            >
+            <button className="clear-btn" onClick={handleClear}>
               Clear
             </button>
 
-            <button
-              className="save-btn"
-              onClick={handleSave}
-            >
+            <button className="save-btn" onClick={handleSave}>
               Save Code
             </button>
 
-            <button
-              className="load-btn"
-              onClick={handleLoad}
-            >
+            <button className="load-btn" onClick={handleLoad}>
               Load Code
             </button>
 
-            <button
-              className="run-btn"
-              onClick={handleRun}
-            >
+            <button className="run-btn" onClick={handleRun}>
               ▶ Run
             </button>
           </div>
         </div>
 
-        {/* Editor Section */}
         <section className="editor-section">
           <div className="section-heading">
             <div>
@@ -278,7 +257,6 @@ function App() {
             setCode={handleCodeChange}
           />
 
-          {/* Statistics */}
           <div className="code-stats">
             <span>Language: {language}</span>
             <span>Lines: {lineCount}</span>
@@ -286,7 +264,6 @@ function App() {
           </div>
         </section>
 
-        {/* Output Section */}
         <section className="output-section">
           <div className="section-heading">
             <div>
@@ -305,10 +282,10 @@ function App() {
           <OutputConsole
             output={output}
             status={status}
+            executionTime={executionTime}
           />
         </section>
 
-        {/* Keyboard Shortcuts */}
         <section className="shortcuts">
           <h3>Keyboard Shortcuts</h3>
 
@@ -323,7 +300,6 @@ function App() {
 
       </main>
 
-      {/* Footer */}
       <footer>
         <strong>PolyglotMesh</strong>
         <span>Built with React and Monaco Editor</span>
